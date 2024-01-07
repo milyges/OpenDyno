@@ -46,7 +46,7 @@ void DynoRunResult::_recalcutateItem(int idx) {
 		_lossesCnt = 0;
 	}
 
-	qDebug() << "idx:" << idx << "time:" << item->time << "speed:" << item->speed << "rpm:" << item->rpm << "accFiltered:" << item->accFiltered << "force:" << item->force << "powerKw:" << item->powerKw << "powerKwFiltered:" << item->powerKwFiltered;
+	//qDebug() << "idx:" << idx << "time:" << item->time << "speed:" << item->speed << "rpm:" << item->rpm << "accFiltered:" << item->accFiltered << "force:" << item->force << "powerKw:" << item->powerKw << "powerKwFiltered:" << item->powerKwFiltered;
 }
 
 void DynoRunResult::_recalculateLosses() {

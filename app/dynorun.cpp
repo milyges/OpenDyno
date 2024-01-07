@@ -378,7 +378,7 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 
 	ticks++;
 	if ((ticks % 10) == 0) {
-		qDebug() << "redraw; time" << gpsTime - _startTime << "speed" << speed;
+		//qDebug() << "redraw; time" << gpsTime - _startTime << "speed" << speed;
 		redraw();
 	}
 }
