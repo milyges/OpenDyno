@@ -1,0 +1,19 @@
+#ifndef __MPU_H
+#define __MPU_H
+
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+
+void mpu_init(void);
+int32_t mpu_loop(void);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
+
+#endif /* __MPU_H */

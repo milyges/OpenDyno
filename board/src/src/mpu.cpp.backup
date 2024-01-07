@@ -1,0 +1,82 @@
+#include <mpu.h>
+#include <Arduino.h>
+#include <Wire.h>
+#include <uprintf.h>
+#include <I2Cdev.h>
+#include <MPU6050_6Axis_MotionApps20.h>
+
+MPU6050 _mpu;
+static uint8_t _dev_status;
+
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount;     // count of all bytes currently in FIFO
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion q;           // [w, x, y, z]         quaternion container
+VectorInt16 aa;         // [x, y, z]            accel sensor measurements
+VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+VectorFloat gravity;    // [x, y, z]            gravity vector
+
+void mpu_init(void) {    
+    Wire.begin();
+    
+    uprintf("MPU: INIT\r\n");
+    _mpu.initialize(); 
+    
+    uprintf("MPU: Test connection: %d\r\n", _mpu.testConnection());
+
+    _dev_status = _mpu.dmpInitialize();
+    uprintf("MPU: DMP Status: %d\r\n", _dev_status);
+
+
+    /* Specyficzne dla konkretnej sztuki układu, najlepiej po zlutowaniu układu użyć zakomentowanego kodu poniżej do ustalenia wartości */
+    _mpu.setXGyroOffset(-63);
+    _mpu.setYGyroOffset(8);
+    _mpu.setZGyroOffset(21);
+
+    _mpu.setXAccelOffset(-1670);
+    _mpu.setYAccelOffset(417);
+    _mpu.setZAccelOffset(534);
+
+    
+    uprintf("MPU: Start calibration: ");
+    if (_dev_status == 0) {
+        //_mpu.PrintActiveOffsets();
+        //_mpu.CalibrateAccel(40);
+        //_mpu.CalibrateGyro(40);    
+        //_mpu.PrintActiveOffsets();
+        _mpu.setDMPEnabled(true);   
+        //while(1);
+    }
+
+    uprintf("\r\nMPU: Init done\r\n");
+    
+    packetSize = _mpu.dmpGetFIFOPacketSize();    
+}
+
+int32_t mpu_loop(void) {
+    int len;
+    int32_t accel;
+
+    if (_mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet 
+        _mpu.dmpGetQuaternion(&q, fifoBuffer);
+        _mpu.dmpGetAccel(&aa, fifoBuffer);
+        _mpu.dmpGetGravity(&gravity, &q);
+        _mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);        
+
+        /* Długośc wektora */
+        len = round(sqrt(aaReal.x * aaReal.x + aaReal.y * aaReal.y + aaReal.z * aaReal.z));        
+
+        /* Z racji że 16384 to 2*g to obliczamy z proporcji, aby uniknąć liczb zmiennoprzecinkowych to liczymy w mm/s^2 */
+        accel = (len * 2 * 9807) / 16384;
+        
+        //uprintf("accel: %d, %d, %d\r\n", aa.x, aa.y, aa.z);
+
+        //uprintf("len: %d, accel: %d.%03d m/s^2\r\n", len, accel / 1000, accel % 1000);        
+        return accel;
+    }
+    else {
+        return -1;
+    }
+}
