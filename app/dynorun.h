@@ -60,7 +60,7 @@ class DynoRun : public QObject
 		int rpmMax(void);
 
 
-	private:
+	private:		
 		QChart * _chart;
 
 		QValueAxis * _axisRpm;
@@ -75,6 +75,7 @@ class DynoRun : public QObject
 		QSplineSeries * _torque;
 
 		DynoRunResult _result;
+		int _drawState;
 		double _pwrMax;
 		int _pwrMaxRpm;
 

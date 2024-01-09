@@ -169,15 +169,15 @@ DynoRunResultItem * DynoRunResult::item(int idx) {
 }
 
 int DynoRunResult::resultsCount() {
-	return _lossesStartIndex >= 0 ? _lossesStartIndex : _items.size();
+	return _lossesStartIndex >= 0 ? _lossesStartIndex : _items.size() - 1;
 }
 
 int DynoRunResult::lossesCount() {
-	return _lossesStartIndex >= 0 ? _items.size() - _lossesStartIndex : 0;
+	return _lossesStartIndex >= 0 ? _items.size() - _lossesStartIndex - 1: 0;
 }
 
 int DynoRunResult::itemsCount() {
-	return _items.size();
+	return _items.size() - 1;
 }
 
 double DynoRunResult::lossAt(int rpm) {

@@ -144,9 +144,6 @@ void DynoRun::cancelRun() {
 }
 
 void DynoRun::redraw() {
-	DynoRunResultItem * item;
-	double power, loss, torque, powerRaw, powerTotal;
-
 	/* Czyścimy serie danych */
 	_pwrRaw->clear();
 	_pwrWheel->clear();
@@ -161,9 +158,22 @@ void DynoRun::redraw() {
 	_torqueMaxRpm = 0;
 	_rpmMax = 0;
 	_speedMax = 0;
+	_drawState = 20; /* Pierwsze 2 sekundy pomijamy w wykresie */
 
-	for(int i = 20; i < _result.resultsCount() - 5; i++) {
-		item = _result.item(i);
+	update();
+	update();
+	update();
+	update();
+	update();
+	update();
+}
+
+void DynoRun::update() {
+	DynoRunResultItem * item;
+	double power, loss, torque, powerRaw, powerTotal;
+
+	for(; _drawState < _result.resultsCount() - 3; _drawState++) {
+		item = _result.item(_drawState);
 
 		power = item->powerKwFiltered * 1.36f;
 		powerRaw = item->powerKw * 1.36f;
@@ -211,15 +221,14 @@ void DynoRun::redraw() {
 		*_torque << QPointF(item->rpm, torque);
 	}
 
-	/* Surowe straty */
-	for (int i = _result.resultsCount() + 10; i < _result.itemsCount(); i++) {
-		item = _result.item(i);
-		loss = -item->powerKwFiltered * 1.36f;
-		*_lossesRaw << QPointF(item->rpm, loss);
+	/* Surowe straty */	
+	if (_result.lossesCount() > 10) {
+		for ( ; _drawState < _result.itemsCount(); _drawState++) {
+			item = _result.item(_drawState);
+			loss = -item->powerKwFiltered * 1.36f;
+			*_lossesRaw << QPointF(item->rpm, loss);
+		}
 	}
-}
-
-void DynoRun::update() {
 
 }
 
@@ -377,8 +386,8 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 	}
 
 	ticks++;
-	if ((ticks % 10) == 0) {
+	if ((ticks % 2) == 0) {
 		//qDebug() << "redraw; time" << gpsTime - _startTime << "speed" << speed;
-		redraw();
+		update();
 	}
 }

@@ -25,6 +25,9 @@ DynoDevice::DynoDevice(QObject *parent) : QObject{parent} {
 	_demoTimer->setSingleShot(false);
 	_demoTimer->setInterval(100);
 	connect(_demoTimer, SIGNAL(timeout()), this, SLOT(_demoTimerTick()));
+
+	_demoFile = nullptr;
+	_demoTextStream = nullptr;
 #endif
 }
 
@@ -111,6 +114,35 @@ void DynoDevice::_serialportDataReady() {
 
 #ifdef DEMOMODE_ENABLED
 void DynoDevice::_demoTimerTick() {
+	if (!_demoFile) {
+		_demoFile = new QFile("/home/milyges/Dokumenty/opendyno/test3.dyno");
+		_demoFile->open(QIODevice::ReadOnly | QIODevice::Text);
+	}
+
+	if (!_demoTextStream) {
+		_demoTextStream = new QTextStream(_demoFile);
+		qDebug() << _demoTextStream->readLine();
+		_demoTimer->setInterval(100);
+		_demoTimer->setSingleShot(false);
+		_demoTimer->start();
+	}
+
+	QString line = _demoTextStream->readLine();
+	if (line.isNull()) {
+		_demoTimer->stop();
+		_demoFile->close();
+
+		delete _demoTextStream;
+		delete _demoFile;
+
+		_demoTextStream = nullptr;
+		_demoFile = nullptr;
+	}
+
+	QStringList data = line.split(";");
+	if (data.size() == 2) {
+		emit newData(data[0].toDouble(), data[1].toDouble());
+	}
 
 }
 #endif /* DEMOMODE_ENABLED */
@@ -131,5 +163,9 @@ void DynoDevice::setPort(QString port) {
 	_serialPort->setPortName(port);
 	_serialPortWathdog->start();
 	emit serialPortChanged(port);
+
+#ifdef DEMOMODE_ENABLED
+	_demoTimer->start(5000);
+#endif /* DEMOMODE_ENABLED */
 }
 
