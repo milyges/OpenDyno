@@ -15,20 +15,43 @@ for i = 1:size(time)(1)
   % Zaokrąglenie do 0.01m/s
 end
 
-subplot(3,1,1);
-plot(time, speedm, 'r', time, rawspeed, 'g', time, speedfiltered, 'b');
+% Projektowanie filtra
+speedfiltered2 = speedm;
+% low pass filter
+for i = 3:size(time)(1)
+  speedfiltered2(i) = 0.5 * speedfiltered2(i-1) + 0.25 * speedm(i) + 0.25 * speedm(i-1);
+end
+
+
+% Obliczenie błędu
+err = zeros(1, size(time));
+for i = 1:size(time)(1)
+  err(i) = speedfiltered(i) - speedfiltered2(i);
+end
+
+subplot(4,1,1);
+plot(time, speedm, 'r', time, rawspeed, 'g', time, speedfiltered2, 'b');
 title('Prędkość');
 xlabel('Czas');
 ylabel('Prędkośc [m/s]');
 legend('Wartośc uśredniona z 3 próbek', 'Wartośc surowa', 'Wartość po filtrze');
 
+subplot(4,1,2);
+plot(time, err, 'r');
+title('Błąd prędkości');
+xlabel('Czas');
+ylabel('Błąd [m/s]');
+legend('Błąd względem prędkości surowej');
+
 
 % Obliczamy przyspieszenie
 acc = zeros(1, size(time));
+accraw = zeros(1, size(time));
 for i = 2:size(time)(1)
-  acc(i) = (speedfiltered(i) - speedfiltered(i - 1)) / (time(i) - time(i-1));
-  %acc(i) = (rawspeed(i) - rawspeed(i - 1)) / (time(i) - time(i-1));
+  %acc(i) = (speedfiltered(i) - speedfiltered(i - 1)) / (time(i) - time(i-1));
+  accraw(i) = (rawspeed(i) - rawspeed(i - 1)) / (time(i) - time(i-1));
   %acc(i) = (speedm(i) - speedm(i - 1)) / (time(i) - time(i-1));
+  acc(i) = (speedfiltered2(i) - speedfiltered2(i - 1)) / (time(i) - time(i-1));
 end
 
 % Uśrednienie przyśpieszenia
@@ -74,23 +97,23 @@ for i = 2:size(time)(1)
 end
 
 
-subplot(3,1,2);
-plot(time(2:end), acc(2:end), 'g', time(2:end), accm(2:end), 'b', time(2:end), accfiltered(2:end), 'r');
+subplot(4,1,3);
+plot(time(2:end), acc(2:end), 'g', time(2:end), accm(2:end), 'b', time(2:end), accraw(2:end), 'r');
 title('Przyspieszenie');
 xlabel('Czas');
 ylabel('Przyspieszenie [m/s^2]');
-legend('Wartość surowa', 'Wartośc uśredniona z 3 próbek');
+legend('Wartość z prędkości po filtrze', 'Wartośc uśredniona z 3 próbek', 'Wartość z prędkości surowej');
 
 % moc na kołach
 pwr = [ 0 ];
 
 for idx = 2:size(time)(1)
-  f = 1460 * accfiltered(idx)
-  y = (f * speedfiltered(idx) / 1000);
+  f = 1460 * accm(idx);
+  y = (f * speedfiltered2(idx) / 1000) * 1.36;
   pwr = [ pwr;  y ];
 end;
 
-subplot(3,1,3)
+subplot(4,1,4)
 plot(speedfiltered(2:end), pwr(2:end), 'r')
 legend('Moc na kołach')
 xlabel('Predkosc [m/s]');

@@ -29,6 +29,7 @@ void DynoRunResult::_recalcutateItem(int idx) {
 
 		/* Uśrednienie z 3 pomiarów przyśpieszenia */
 		item->accMean = (prevItem->acc + item->acc + nextItem->acc) / 3;
+		//item->accMean = item->acc;
 		item->accFiltered = _accFilter.getFiltered(item->accMean);
 	}
 
@@ -92,10 +93,11 @@ DynoRunResult::DynoRunResult() {
 	_rpmRatio = 1.0f;
 
 	/* Wartości filtrów dobrane eksperymentalnie */
-	_correctionFactor = 1.04;
+	//_correctionFactor = 1.04;
+	_correctionFactor = 1;
 	_accFilter = KalmanFilter();
 	//_accFilter.init(8, 1, 1, 5, 0.1);
-	_accFilter.init(8, 1, 1, 5, 0.1);
+	_accFilter.init(10, 1, 1, 4, 0.1);
 
 	_pwrFilter = KalmanFilter();
 	//_pwrFilter.init(10, 1, 1, 15, 0.1);

@@ -572,7 +572,7 @@
   </widget>
   <action name="actionRunStart">
    <property name="text">
-    <string>S&amp;tart</string>
+    <string>S&amp;tart new</string>
    </property>
    <property name="shortcut">
     <string>Space</string>
@@ -580,7 +580,7 @@
   </action>
   <action name="actionRunLoad">
    <property name="text">
-    <string>&amp;Load</string>
+    <string>&amp;Load current</string>
    </property>
    <property name="shortcut">
     <string>F4</string>
@@ -588,7 +588,7 @@
   </action>
   <action name="actionRunSave">
    <property name="text">
-    <string>Sa&amp;ve</string>
+    <string>Sa&amp;ve current</string>
    </property>
    <property name="shortcut">
     <string>F3</string>

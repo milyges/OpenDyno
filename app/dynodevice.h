@@ -41,6 +41,7 @@ class DynoDevice : public QObject
 		void _demoTimerTick(void);
 #endif /* DEMOMODE_ENABLED */
 	public:
+		static const int UnknownFix = 0;
 		static const int NoFix = 1;
 		static const int Fix2D = 2;
 		static const int Fix3D = 3;

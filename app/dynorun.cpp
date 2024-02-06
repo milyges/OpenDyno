@@ -4,6 +4,8 @@
 #include "dynodevice.h"
 
 DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QValueAxis * axisTrq, QObject *parent): QObject{parent} {
+	_name = "";
+
 	_chart = chart;
 	_axisRpm = axisRpm;
 	_axisPwr = axisPwr;
@@ -16,42 +18,37 @@ DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QVa
 	_lossesRaw = new QSplineSeries();
 	_torque = new QSplineSeries();
 
-	_chart->addSeries(_pwrRaw);
-	_pwrRaw->setName(tr("Power (raw)"));
+	_chart->addSeries(_pwrRaw);	
 	_pwrRaw->attachAxis(_axisRpm);
 	_pwrRaw->attachAxis(_axisPwr);
 	_pwrRaw->setColor(QColorConstants::DarkYellow);
-
 	_chart->addSeries(_pwrWheel);
-	_pwrWheel->setName(tr("Power (wheel)"));
+
 	_pwrWheel->attachAxis(_axisRpm);
 	_pwrWheel->attachAxis(_axisPwr);
-	_pwrWheel->setColor(QColorConstants::Cyan);
+	_pwrWheel->setColor(QColorConstants::DarkGreen);
 
-	_chart->addSeries(_pwrTotal);
-	_pwrTotal->setName(tr("Power"));
+	_chart->addSeries(_pwrTotal);	
 	_pwrTotal->attachAxis(_axisRpm);
 	_pwrTotal->attachAxis(_axisPwr);
 	_pwrTotal->setColor(QColorConstants::Red);
 
-	_chart->addSeries(_losses);
-	_losses->setName(tr("Losses"));
+	_chart->addSeries(_losses);	
 	_losses->attachAxis(_axisRpm);
 	_losses->attachAxis(_axisPwr);
 	_losses->setColor(QColorConstants::Green);
-
 	_chart->addSeries(_lossesRaw);
-	_lossesRaw->setName(tr("Losses (raw)"));
+
 	_lossesRaw->attachAxis(_axisRpm);
 	_lossesRaw->attachAxis(_axisPwr);
 	_lossesRaw->setColor(QColorConstants::Magenta);
 
 	_chart->addSeries(_torque);
-	_torque->setName(tr("Torque"));
 	_torque->attachAxis(_axisRpm);
 	_torque->attachAxis(_axisTrq);
 	_torque->setColor(QColorConstants::Blue);
 
+	setName("Run");
 	_result = DynoRunResult();
 
 	_pwrMax = 0;
@@ -297,6 +294,21 @@ int DynoRun::rpmMax() {
 	return _rpmMax;
 }
 
+QString DynoRun::name() {
+	return _name;
+}
+
+void DynoRun::setName(QString newname) {
+	_name = newname;
+
+	_pwrRaw->setName(tr("%1 power (raw)").arg(_name));
+	_pwrWheel->setName(tr("%1 power (wheel)").arg(_name));
+	_pwrTotal->setName(tr("%1 power").arg(_name));
+	_losses->setName(tr("%1 losses").arg(_name));
+	_lossesRaw->setName(tr("%1 losses (raw)").arg(_name));
+	_torque->setName(tr("%1 torque").arg(_name));
+}
+
 double DynoRun::calculateTorque(int rpm, double power) {
 	return power * 9549.3f / rpm;
 }
@@ -354,10 +366,11 @@ void DynoRun::_finishRun(DynoRunState state) {
 
 void DynoRun::_dynoNewData(double gpsTime, double speed) {
 	static int ticks = 0;
+	static double loossesStart;
 
 	if ((_state == RunWaitForSpeed) && (speed >= 0.0f)) {
 		_state = RunCountdown;
-		ticks = -30; /* Czekamy 3 sek do początku pomiaru */
+		ticks = -10; /* Czekamy 3 sek do początku pomiaru */
 		emit runStateChanged(_state);
 	}
 
@@ -372,6 +385,7 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 	if (_state == RunAccelerating) {
 		if (_result.lossesCount() > 0) {
 			_state = RunLosses;
+			loossesStart = gpsTime;
 			emit runStateChanged(_state);
 		}
 
@@ -379,7 +393,7 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 	}
 	else if (_state == RunLosses) { /* Pomiar strat */
 		/* Straty obliczamy podaną ilośc czasu [20sek, zmieniane w ustawieniach] */
-		if (_result.lossesCount() > DynoSettings::getInstance()->lossTime() * 10) {
+		if (gpsTime - loossesStart >= DynoSettings::getInstance()->lossTime()) {
 			_finishRun(RunFinished);
 		}
 		_result.addData(gpsTime - _startTime, speed);

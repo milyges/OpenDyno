@@ -20,6 +20,9 @@ DynoDevice::DynoDevice(QObject *parent) : QObject{parent} {
 
 	_dataLine = "";
 
+	_gpsFix = UnknownFix;
+	_gpsSIV = -1;
+
 #ifdef DEMOMODE_ENABLED
 	_demoTimer = new QTimer();
 	_demoTimer->setSingleShot(false);

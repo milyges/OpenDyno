@@ -59,8 +59,12 @@ class DynoRun : public QObject
 		double speedMax(void);
 		int rpmMax(void);
 
+		QString name(void);
+		void setName(QString newname);
 
 	private:		
+		QString _name;
+
 		QChart * _chart;
 
 		QValueAxis * _axisRpm;

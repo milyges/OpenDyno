@@ -37,26 +37,13 @@ void gps_init(void) {
     uprintf("GPS: Connected\r\n");
 
     _ublox_gnss.setUART1Output(COM_TYPE_UBX);
-
-    uprintf("GPS: getMeasurementRate: %u, getNavigationRate: %u\r\n", _ublox_gnss.getMeasurementRate(), _ublox_gnss.getNavigationRate());
-
-    _ublox_gnss.setMeasurementRate(100);
+    _ublox_gnss.setMeasurementRate(250); /* 4Hz */
     _ublox_gnss.setNavigationRate(1);
     _ublox_gnss.setDynamicModel(DYN_MODEL_AUTOMOTIVE);
     _ublox_gnss.setAutoPVT(true);
     
-     
-    //_ublox_gnss.enableOdometer();    
-    //_ublox_gnss.getOdometerConfig(&flags, &odoCfg, &cogMaxSpeed,  &cogMaxPosAcc, &velLpGain, &cogLpGain);
-    
-    //flags = UBX_CFG_ODO_USE_ODO;
-    //odoCfg = UBX_CFG_ODO_CAR;
-    //velLpGain = 60; /* Moc filtra prędkości; 0-255; 0 - najmocniejsze filtrowanie; 255 - najsłabsze */
-    //_ublox_gnss.setOdometerConfig(flags, odoCfg, cogMaxSpeed, cogMaxPosAcc, velLpGain, cogLpGain);    
-    //_ublox_gnss.resetOdometer();
 
-    //uprintf("GPS: Odometer config: flags=%02x, odoCfg=%02x, cogMaxSpeed=%u, cogMaxPosAcc=%u, velLpGain=%u, cogLpGain=%u\r\n", flags, odoCfg, cogMaxSpeed, cogMaxPosAcc, velLpGain, cogLpGain);
-    uprintf("GPS: Ready\r\n");    
+    uprintf("GPS: Ready\r\n");
 }
 
 void gps_loop(void) {
@@ -64,6 +51,7 @@ void gps_loop(void) {
     static uint32_t timeHistory[3] = { 0, 0, 0};
     static uint32_t prevSpeed = 0, prevSpeedFiltered = 0;
     uint32_t speed, speedFiltered;
+    
 
     if (_ublox_gnss.getPVT()) {
         uint32_t currentTime = _ublox_gnss.getTimeOfWeek();
@@ -89,7 +77,7 @@ void gps_loop(void) {
         speed = sum / 3;
 
         /* Filtr dolnoprzepustowy */        
-        speedFiltered = (70 * prevSpeedFiltered + 15 * speed + 15 * prevSpeed) / 100;
+        speedFiltered = (50 * prevSpeedFiltered + 25 * speed + 25 * prevSpeed) / 100;
 
         /* Wypisujemy o 0.2sek do tyłu, żeby zniwelować opóźnienie na filtrze */
         //uprintf("time=%u, speedFiltered=%u, speed=%u, speedraw=%u\r\n", timeHistory[0], speedFiltered, prevSpeed, speedHistory[0]);

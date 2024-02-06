@@ -178,7 +178,7 @@ void WndMain::_updateRunInfo(int row, DynoRun * run) {
 		twiVMax = _ui->twRuns->item(row, 4);
 	}
 
-	twiName->setText("");
+	twiName->setText(run->name());
 	twiPwrMax->setText(tr("%1KM @ %2RPM").arg(run->powerMax(), 0, 'f', 1).arg(run->powerMaxRPM()));
 	twiTrqMax->setText(tr("%1Nm @ %2RPM").arg(run->torqueMax(), 0, 'f', 1).arg(run->torqueMaxRPM()));
 	twiRPMMax->setText(tr("%1RPM").arg(run->rpmMax()));
@@ -239,7 +239,7 @@ void WndMain::_loadCurrentRun() {
 
 	run = _newDynoRun();
 	run->loadFromFile(w.selectedFiles().at(0));
-
+	run->setName("Run 1");
 	if (_currentRun) {
 		delete _currentRun;
 	}
@@ -290,6 +290,7 @@ void WndMain::_loadOtherRun() {
 	run = _newDynoRun();
 	run->setLineStyle(_lineStyles[count]);
 	run->loadFromFile(w.selectedFiles().at(0));
+	run->setName(QString("Run %1").arg(count + 2));
 
 	_runs.append(run);
 

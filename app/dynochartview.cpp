@@ -14,13 +14,8 @@ DynoChartView::DynoChartView(QChart * chart, QWidget * parent) : QChartView(char
 
 	_chart->legend()->setVisible(true);
 	_chart->legend()->setAlignment(Qt::AlignBottom);
-	//_chart->legend()->detachFromChart();
-	_chart->setTitle("Dyno result"); /* Obejscie żeby zrobić miejsce... */
-
-	//_legend = new DynoChartViewLegend(chart);
-	//_legend->setZValue(10);
-	//_legend->show();
-	//_legend->setPos(0, 0);
+	_chart->legend()->setMarkerShape(QLegend::MarkerShapeFromSeries);
+	_chart->setTitle("Dyno result");
 }
 
 DynoChartView::~DynoChartView() {
