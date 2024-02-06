@@ -30,7 +30,7 @@ void DynoRunResult::_recalcutateItem(int idx) {
 		/* Uśrednienie z 3 pomiarów przyśpieszenia */
 		item->accMean = (prevItem->acc + item->acc + nextItem->acc) / 3;
 		//item->accMean = item->acc;
-		item->accFiltered = _accFilter.getFiltered(item->accMean);
+		item->accFiltered = /*item->accMean; //*/_accFilter.getFiltered(item->accMean);
 	}
 
 	_calculateForceAndPower(item);
@@ -52,7 +52,7 @@ void DynoRunResult::_recalcutateItem(int idx) {
 
 void DynoRunResult::_recalculateLosses() {
 	/* Regresja dla strat */
-	if (_lossesCnt <= 70) {
+    if (_lossesCnt <= 10) {
 		return; /* Nie pobrano wystarczającej ilości danych */
 	}
 
@@ -93,15 +93,15 @@ DynoRunResult::DynoRunResult() {
 	_rpmRatio = 1.0f;
 
 	/* Wartości filtrów dobrane eksperymentalnie */
-	//_correctionFactor = 1.04;
-	_correctionFactor = 1;
+	_correctionFactor = 1.04;
+	//_correctionFactor = 1;
 	_accFilter = KalmanFilter();
 	//_accFilter.init(8, 1, 1, 5, 0.1);
-	_accFilter.init(10, 1, 1, 4, 0.1);
+	_accFilter.init(8, 1, 1, 3, 0.3);
 
 	_pwrFilter = KalmanFilter();
 	//_pwrFilter.init(10, 1, 1, 15, 0.1);
-	_pwrFilter.init(10, 1, 1, 15, 0.1);
+	_pwrFilter.init(10, 1, 1, 15, 0.3);
 }
 
 DynoRunResult::~DynoRunResult() {
@@ -183,5 +183,5 @@ int DynoRunResult::itemsCount() {
 }
 
 double DynoRunResult::lossAt(int rpm) {
-	return _lossC * pow(2.71828, _lossA * rpm);
+    return _lossC * pow(2.71828, _lossA * rpm);
 }
