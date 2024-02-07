@@ -155,7 +155,7 @@ void DynoRun::redraw() {
 	_torqueMaxRpm = 0;
 	_rpmMax = 0;
 	_speedMax = 0;
-	_drawState = 20; /* Pierwsze 2 sekundy pomijamy w wykresie */
+	_drawState = 4; /* Pierwszą 1 sekundę pomijamy w wykresie */
 
 	update();
 	update();

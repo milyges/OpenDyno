@@ -1,6 +1,6 @@
 OpenDyno
 ===
-Open dyno is a simple mobile car road dyno that measures power, torque, speed and other parameters in all vechicle types. It is licensed uder MIT license. OpenDyno uses 10Hz GPS module to measure speed, so installation in car is easy and fast.
+Open dyno is a simple mobile car road dyno that measures power, torque, speed and other parameters in all vechicle types. It is licensed uder MIT license. OpenDyno uses UBLOX M10N GPS module to measure speed (with 4Hz sampling), so installation in car is easy and fast.
 
 The project consists of a measurement module (board and microcontroller software written in C++ with Arduino library) and a computer application (written in C++ with QT library). Initially was developed and tested under Linux and QT6.
 
@@ -17,7 +17,7 @@ TODO
 
 How it is look?
 ===
-![Screenshot 1](doc/screenshots/screnshot1.png)
+![Screenshot 1](doc/screenshots/screnshot4.png)
 *Main window with one run loaded*
 
 ![Screenshot 2](doc/screenshots/screnshot2.png)
@@ -25,4 +25,3 @@ How it is look?
 
 ![Screenshot 3](doc/screenshots/screnshot3.png)
 *All data series visible*
-
