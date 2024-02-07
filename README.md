@@ -17,11 +17,11 @@ TODO
 
 How it is look?
 ===
-![Screenshot 1](doc/screenshots/screnshot4.png)
+![Screenshot 1](doc/screenshots/screenshot4.png)
 *Main window with one run loaded*
 
-![Screenshot 2](doc/screenshots/screnshot2.png)
+![Screenshot 2](doc/screenshots/screenshot2.png)
 *Vechicle settings & calibration window*
 
-![Screenshot 3](doc/screenshots/screnshot3.png)
+![Screenshot 3](doc/screenshots/screenshot3.png)
 *All data series visible*
