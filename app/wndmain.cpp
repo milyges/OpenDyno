@@ -137,12 +137,15 @@ uchar WndMain::_visibleDataSeries() {
 
 void WndMain::_updateRunsInfoBox() {
 	_ui->twRuns->setRowCount(0);
+	_chartView->removeRunInfo();
 
 	if (_currentRun) {
 		_updateRunInfo(0, _currentRun);
+		_chartView->addRunInfo(Qt::SolidLine, _currentRun);
 	}
 
 	for(int i = 0; i < _runs.count(); i++) {
+		_chartView->addRunInfo(_lineStyles[i], _runs[i]);
 		_updateRunInfo(i + 1, _runs[i]);
 	}
 }

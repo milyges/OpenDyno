@@ -26,7 +26,8 @@ class WndMain : public QMainWindow {
 		~WndMain();
 
 	private:
-		const Qt::PenStyle _lineStyles[2] = { Qt::SolidLine, Qt::DashLine };
+		//const Qt::PenStyle _lineStyles[2] = { Qt::SolidLine, Qt::DashLine };
+		const Qt::PenStyle _lineStyles[2] = { Qt::DashLine, Qt::DashDotLine };
 
 		Ui::WndMain * _ui;
 

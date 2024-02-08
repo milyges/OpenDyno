@@ -7,6 +7,20 @@
 #include "dynochartviewlegend.h"
 #include "dynorun.h"
 
+class DynoChartViewRunInfo {
+	private:
+		QChart * _chart;
+		QGraphicsTextItem * _text;
+		QGraphicsLineItem * _line;
+
+	public:
+		DynoChartViewRunInfo(QChart * chart, DynoRun * run, Qt::PenStyle lineStyle);
+		~DynoChartViewRunInfo();
+
+		void setPos(qreal x, qreal y);
+		qreal height(void);
+};
+
 class DynoChartView : public QChartView {
 		Q_OBJECT
 	public:
@@ -14,6 +28,8 @@ class DynoChartView : public QChartView {
 		~DynoChartView();
 
 		void updateUserInfo(QString text);
+		void addRunInfo(Qt::PenStyle lineStyle, DynoRun * run);
+		void removeRunInfo(void);
 
 	protected:
 		void mouseMoveEvent(QMouseEvent *event);
@@ -25,6 +41,7 @@ class DynoChartView : public QChartView {
 		DynoChartViewLegend * _legend;
 
 		QGraphicsTextItem * _userInfoLabel;
+		QList<DynoChartViewRunInfo *> _runInfo;
 
 	signals:
 		void hoveredAtX(float x);
