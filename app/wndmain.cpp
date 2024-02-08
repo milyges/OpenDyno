@@ -332,6 +332,21 @@ void WndMain::_exportImage() {
 		_chartView->render(&painter);
 		_chartView->resize(oldSize);
 
+		/* Obsługa znaku wodnego */
+		QString watermarkPath = DynoSettings::getInstance()->watermarkPath();
+		if (!watermarkPath.isEmpty()) {
+			QPixmap watermark;
+			if (watermark.load(watermarkPath)) {
+				painter.setOpacity(0.15);
+				painter.drawPixmap(buff.width() / 2 - watermark.width() / 2, buff.height() / 2 - watermark.height() / 2, watermark);
+				painter.setOpacity(1);
+			}
+			else {
+				QMessageBox::critical(this, tr("Error"), tr("Unable to load watermark file!"));
+				return;
+			}
+		}
+
 		buff.save(w.selectedFiles().at(0));
 	}
 }
@@ -420,6 +435,8 @@ void WndMain::_dynoSettings() {
 		DynoSettings::getInstance()->setGpsPort(w.gpsPort());
 		DynoSettings::getInstance()->setLossTime(w.lossTime());
 		DynoSettings::getInstance()->setUserInfo(w.userInfo());
+		DynoSettings::getInstance()->setWatermark(w.watermarkFile());
+
 		DynoDevice::getInstance()->setPort(w.gpsPort());		
 		_chartView->updateUserInfo(w.userInfo());
 	}

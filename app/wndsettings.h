@@ -18,12 +18,14 @@ class WndSettings : public QDialog {
 		QString gpsPort(void);
 		int lossTime(void);
 		QString userInfo(void);
+		QString watermarkFile(void);
 
 	private:
 		Ui::WndSettings * _ui;
 
 	private slots:
 		void _browseDir(void);
+		void _browseWatermark(void);
 };
 
 #endif // WNDSETTINGS_H

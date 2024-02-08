@@ -12,6 +12,7 @@ WndSettings::WndSettings(QWidget *parent) : QDialog(parent), _ui(new Ui::WndSett
 	_ui->leDataDir->setText(DynoSettings::getInstance()->dataDir());
 	_ui->sbLossTime->setValue(DynoSettings::getInstance()->lossTime());
 	_ui->pteUserInfo->setPlainText(DynoSettings::getInstance()->userInfo());
+	_ui->leWatermark->setText(DynoSettings::getInstance()->watermarkPath());
 
 	portName = DynoSettings::getInstance()->gpsPort();
 
@@ -23,7 +24,8 @@ WndSettings::WndSettings(QWidget *parent) : QDialog(parent), _ui(new Ui::WndSett
 		}
 	}
 
-	connect(_ui->bntBrowse, SIGNAL(pressed()), this, SLOT(_browseDir()));
+	connect(_ui->bntBrowse, SIGNAL(released()), this, SLOT(_browseDir()));
+	connect(_ui->bntBrowseWatermark, SIGNAL(released()), this, SLOT(_browseWatermark()));
 }
 
 WndSettings::~WndSettings() {
@@ -46,6 +48,10 @@ QString WndSettings::userInfo() {
 	return _ui->pteUserInfo->toPlainText();
 }
 
+QString WndSettings::watermarkFile() {
+	return _ui->leWatermark->text();
+}
+
 void WndSettings::_browseDir() {
 	QFileDialog w(this);
 	w.setDirectory(_ui->leDataDir->text());
@@ -57,4 +63,20 @@ void WndSettings::_browseDir() {
 	}
 
 	_ui->leDataDir->setText(w.selectedFiles().at(0));
+}
+
+void WndSettings::_browseWatermark() {
+	QFileDialog w(this);
+
+	w.setViewMode(QFileDialog::Detail);
+	w.setNameFilter("PNG Images (*.png)");
+	w.setFileMode(QFileDialog::AnyFile);
+	w.setAcceptMode(QFileDialog::AcceptOpen);
+	w.setDefaultSuffix("png");
+
+	if (w.exec() != QDialog::Accepted) {
+		return;
+	}
+
+	_ui->leWatermark->setText(w.selectedFiles().at(0));
 }

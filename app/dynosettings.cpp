@@ -33,6 +33,10 @@ QString DynoSettings::userInfo() {
 	return _settings.value("user/info", "<b style=\"color: blue;\">OpenDyno Test</b><br><br><i>https://github.com/milyges/OpenDyno/</i>").toString();
 }
 
+QString DynoSettings::watermarkPath() {
+	return _settings.value("user/watermark", "").toString();
+}
+
 void DynoSettings::setDataDir(QString dataDir) {
 	_settings.setValue("main/dataDir", dataDir);
 }
@@ -54,6 +58,10 @@ void DynoSettings::setLossTime(int t) {
 
 void DynoSettings::setUserInfo(QString text) {
 	_settings.setValue("user/info", text);
+}
+
+void DynoSettings::setWatermark(QString path) {
+	_settings.setValue("user/watermark", path);
 }
 
 DynoSettings * DynoSettings::getInstance() {
