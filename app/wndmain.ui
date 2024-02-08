@@ -539,6 +539,8 @@
     <addaction name="actionRunLoad"/>
     <addaction name="actionRunSave"/>
     <addaction name="separator"/>
+    <addaction name="actionRunExport"/>
+    <addaction name="separator"/>
     <addaction name="actionRunExit"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -675,6 +677,11 @@
   <action name="actionHelpAbout">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionRunExport">
+   <property name="text">
+    <string>&amp;Export image</string>
    </property>
   </action>
  </widget>

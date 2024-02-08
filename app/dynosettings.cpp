@@ -29,6 +29,10 @@ VehicleProfile DynoSettings::lastVehicleProfile() {
 	return vp;
 }
 
+QString DynoSettings::userInfo() {
+	return _settings.value("user/info", "<b style=\"color: blue;\">OpenDyno Test</b><br><br><i>https://github.com/milyges/OpenDyno/</i>").toString();
+}
+
 void DynoSettings::setDataDir(QString dataDir) {
 	_settings.setValue("main/dataDir", dataDir);
 }
@@ -46,6 +50,10 @@ void DynoSettings::setLastVehicleProfile(VehicleProfile vp) {
 
 void DynoSettings::setLossTime(int t) {
 	_settings.setValue("main/lossTime", t);
+}
+
+void DynoSettings::setUserInfo(QString text) {
+	_settings.setValue("user/info", text);
 }
 
 DynoSettings * DynoSettings::getInstance() {

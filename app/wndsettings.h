@@ -17,6 +17,7 @@ class WndSettings : public QDialog {
 		QString dataDir(void);
 		QString gpsPort(void);
 		int lossTime(void);
+		QString userInfo(void);
 
 	private:
 		Ui::WndSettings * _ui;

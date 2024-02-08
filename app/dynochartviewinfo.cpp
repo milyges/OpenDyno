@@ -44,13 +44,14 @@ void DynoChartViewInfo::paint(QPainter * painter, const QStyleOptionGraphicsItem
 
 	for(i = 0; i < _texts.size(); i++) {
 		yoffset = i * (fm.height() + 1);
+
 		p.setColor(_texts[i].color);
 		p.setStyle(_texts[i].style);
 		painter->setPen(p);
 		painter->drawLine(_textRect.x() + 1, _textRect.y() + yoffset + 1 + fm.height() / 2, _textRect.x() + 1 + fm.height() - 2, _textRect.y() + yoffset + 1 + fm.height() / 2);
 		painter->setPen(Qt::black);
 		painter->drawText(_textRect + QMarginsF(-(fm.height() + 3), -yoffset, 0, 0), _texts[i].text);
-		painter->drawText(_textRect + QMarginsF(-(fm.height() + 3 + 85), -yoffset, 0, 0), QString("%1 %2").arg(_texts[i].value, 0, 'f', 1).arg(_texts[i].unit));
+		painter->drawText(_textRect + QMarginsF(-(fm.height() + 3 + 125), -yoffset, 0, 0), QString("%1 %2").arg(_texts[i].value, 0, 'f', 1).arg(_texts[i].unit));
 	}
 }
 

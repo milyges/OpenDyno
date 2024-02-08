@@ -55,10 +55,12 @@ class WndMain : public QMainWindow {
 		void _updateRunInfo(int row, DynoRun * run);
 		void _updateGuiState(void);
 		void _updateProfileLabels(void);
+		void _updateAxesMax(void);
 
 	private slots:
 		void _loadCurrentRun(void);
 		void _saveCurrentRun(void);
+		void _exportImage(void);
 		void _loadOtherRun(void);
 		void _removeRun(void);
 		void _startStopRun(void);

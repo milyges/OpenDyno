@@ -5,12 +5,15 @@
 #include <QObject>
 #include "dynochartviewinfo.h"
 #include "dynochartviewlegend.h"
+#include "dynorun.h"
 
 class DynoChartView : public QChartView {
 		Q_OBJECT
 	public:
 		DynoChartView(QChart * chart, QWidget * parent = nullptr);
 		~DynoChartView();
+
+		void updateUserInfo(QString text);
 
 	protected:
 		void mouseMoveEvent(QMouseEvent *event);
@@ -20,6 +23,9 @@ class DynoChartView : public QChartView {
 		QChart * _chart;
 		DynoChartViewInfo * _infoBox;
 		DynoChartViewLegend * _legend;
+
+		QGraphicsTextItem * _userInfoLabel;
+
 	signals:
 		void hoveredAtX(float x);
 };

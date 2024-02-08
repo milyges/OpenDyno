@@ -211,6 +211,10 @@ void DynoRun::update() {
 			_axisTrq->setMax(torque + 60);
 		}
 
+		if (item->rpm + 100 >= _axisRpm->max()) {
+			_axisRpm->setMax(item->rpm + 100);
+		}
+
 		*_pwrRaw << QPointF(item->rpm, powerRaw);
 		*_pwrWheel << QPointF(item->rpm, power);
 		*_pwrTotal << QPointF(item->rpm, powerTotal);

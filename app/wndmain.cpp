@@ -26,7 +26,7 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	_axisRPM->setMinorGridLineVisible(true);
 	_axisRPM->setLabelFormat("%d");
 	_axisRPM->setMin(1500);
-	_axisRPM->setMax(7000);
+	_axisRPM->setMax(4000);
 
 	_axisPower->setTickCount(11);
 	_axisPower->setMinorGridLineVisible(true);
@@ -45,6 +45,7 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	_chart->addAxis(_axisTorque, Qt::AlignRight);
 
 	_chartView = new DynoChartView(_chart, this);
+	_chartView->updateUserInfo(DynoSettings::getInstance()->userInfo());
 	_ui->vlChart->addWidget(_chartView);
 
 	_currentRun = nullptr;
@@ -58,6 +59,7 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	connect(_ui->actionRunStart, SIGNAL(triggered(bool)), this, SLOT(_startStopRun()));
 	connect(_ui->actionRunLoad, SIGNAL(triggered(bool)), this, SLOT(_loadCurrentRun()));
 	connect(_ui->actionRunSave, SIGNAL(triggered(bool)), this, SLOT(_saveCurrentRun()));
+	connect(_ui->actionRunExport, SIGNAL(triggered(bool)), this, SLOT(_exportImage()));
 
 	connect(_ui->actionViewLosses, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
 	connect(_ui->actionViewLossesRaw, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
@@ -222,6 +224,44 @@ void WndMain::_updateProfileLabels() {
 	_ui->lbPressure->setText(QString("%1 hPa").arg(_currentProfile.airPress));
 }
 
+void WndMain::_updateAxesMax() {
+	int maxRpm = 3500, maxPwr = 100, maxTrq = 100;
+
+	if (_currentRun) {
+		if (_currentRun->rpmMax() >= maxRpm) {
+			maxRpm = _currentRun->rpmMax();
+		}
+
+		if (_currentRun->powerMax() >= maxPwr) {
+			maxPwr = _currentRun->powerMax();
+		}
+
+		if (_currentRun->torqueMax() >= maxTrq) {
+			maxTrq = _currentRun->torqueMax();
+		}
+	}
+
+	for (int i = 0; i < _runs.size(); i++) {
+		DynoRun * r = _runs[i];
+
+		if (r->rpmMax() >= maxRpm) {
+			maxRpm = r->rpmMax();
+		}
+
+		if (r->powerMax() >= maxPwr) {
+			maxPwr = r->powerMax();
+		}
+
+		if (r->torqueMax() >= maxTrq) {
+			maxTrq = r->torqueMax();
+		}
+	}
+
+	_axisRPM->setMax((maxRpm / 500) * 500 + 500);
+	_axisPower->setMax(maxPwr + 40);
+	_axisTorque->setMax(maxTrq + 40);
+}
+
 void WndMain::_loadCurrentRun() {
 	QFileDialog w(this);
 	DynoRun * run;
@@ -247,6 +287,7 @@ void WndMain::_loadCurrentRun() {
 	_currentRun = run;
 
 	_updateRunsInfoBox();
+	_updateAxesMax();
 }
 
 void WndMain::_saveCurrentRun() {
@@ -263,6 +304,35 @@ void WndMain::_saveCurrentRun() {
 			_prevSavePath = w.directory().absolutePath();
 			_currentRun->saveToFile(w.selectedFiles().at(0));
 		}
+	}
+}
+
+void WndMain::_exportImage() {
+	QFileDialog w(this);
+
+	w.setDirectory(_prevSavePath);
+	w.setViewMode(QFileDialog::Detail);
+	w.setNameFilter("PNG Images (*.png)");
+	w.setFileMode(QFileDialog::AnyFile);
+	w.setAcceptMode(QFileDialog::AcceptSave);
+	w.setDefaultSuffix("png");
+	w.selectFile(QString("export_%1.png").arg(QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss")));
+
+	if (w.exec() == QDialog::Accepted) {
+		QPixmap buff(1280, 720);
+		buff.fill(Qt::transparent);
+
+		QPainter painter(&buff);
+		painter.setRenderHint(QPainter::Antialiasing);
+		painter.setPen(QColor(255,34,255,255));
+
+		/* Brzydki hak żeby na szybko eksportować w takim rozmiarze jakchcemy */
+		QSize oldSize = _chartView->size();
+		_chartView->resize(buff.size());
+		_chartView->render(&painter);
+		_chartView->resize(oldSize);
+
+		buff.save(w.selectedFiles().at(0));
 	}
 }
 
@@ -295,6 +365,7 @@ void WndMain::_loadOtherRun() {
 	_runs.append(run);
 
 	_updateRunsInfoBox();
+	_updateAxesMax();
 }
 
 void WndMain::_removeRun() {
@@ -305,6 +376,7 @@ void WndMain::_removeRun() {
 		delete run;
 
 		_updateRunsInfoBox();
+		_updateAxesMax();
 	}
 }
 
@@ -336,6 +408,7 @@ void WndMain::_setVechicleProfile() {
 		if (_currentRun) {
 			_currentRun->setParameters(_currentProfile.rpmRatio, _currentProfile.weight);
 			_updateRunsInfoBox();
+			_updateAxesMax();
 		}
 	}
 }
@@ -346,7 +419,9 @@ void WndMain::_dynoSettings() {
 		DynoSettings::getInstance()->setDataDir(w.dataDir());
 		DynoSettings::getInstance()->setGpsPort(w.gpsPort());
 		DynoSettings::getInstance()->setLossTime(w.lossTime());
-		DynoDevice::getInstance()->setPort(w.gpsPort());
+		DynoSettings::getInstance()->setUserInfo(w.userInfo());
+		DynoDevice::getInstance()->setPort(w.gpsPort());		
+		_chartView->updateUserInfo(w.userInfo());
 	}
 }
 
@@ -371,6 +446,7 @@ void WndMain::_runStateChanged(DynoRun::DynoRunState state) {
 	switch (state) {
 		case DynoRun::RunInitial: {
 			_ui->lbStatus->setText(tr("Waiting for run start..."));
+			_updateAxesMax();
 			break;
 		};
 		case DynoRun::RunWaitForSpeed: {
@@ -392,12 +468,14 @@ void WndMain::_runStateChanged(DynoRun::DynoRunState state) {
 		case DynoRun::RunFinished: {
 			_ui->lbStatus->setText(tr("Run finished."));
 			_updateRunsInfoBox();
+			_updateAxesMax();
 			_runInPogress = false;
 			break;
 		}
 		case DynoRun::RunCanceled: {
 			_ui->lbStatus->setText(tr("Run canceled."));
 			_updateRunsInfoBox();
+			_updateAxesMax();
 			_runInPogress = false;
 			break;
 		}

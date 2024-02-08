@@ -11,6 +11,8 @@ WndSettings::WndSettings(QWidget *parent) : QDialog(parent), _ui(new Ui::WndSett
 
 	_ui->leDataDir->setText(DynoSettings::getInstance()->dataDir());
 	_ui->sbLossTime->setValue(DynoSettings::getInstance()->lossTime());
+	_ui->pteUserInfo->setPlainText(DynoSettings::getInstance()->userInfo());
+
 	portName = DynoSettings::getInstance()->gpsPort();
 
 	QList<QSerialPortInfo> info = QSerialPortInfo::availablePorts();
@@ -38,6 +40,10 @@ QString WndSettings::gpsPort() {
 
 int WndSettings::lossTime() {
 	return _ui->sbLossTime->value();
+}
+
+QString WndSettings::userInfo() {
+	return _ui->pteUserInfo->toPlainText();
 }
 
 void WndSettings::_browseDir() {

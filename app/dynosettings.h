@@ -16,11 +16,13 @@ class DynoSettings {
 		QString gpsPort(void);
 		int lossTime(void);
 		VehicleProfile lastVehicleProfile(void);
+		QString userInfo(void);
 
 		void setDataDir(QString dataDir);
 		void setGpsPort(QString port);
 		void setLastVehicleProfile(VehicleProfile vp);
 		void setLossTime(int t);
+		void setUserInfo(QString text);
 
 		static DynoSettings * getInstance(void);
 };
