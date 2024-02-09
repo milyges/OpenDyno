@@ -18,6 +18,8 @@ class DynoSettings {
 		VehicleProfile lastVehicleProfile(void);
 		QString userInfo(void);
 		QString watermarkPath(void);
+		double correctionFactor(void);
+		double filterPower(void);
 
 		void setDataDir(QString dataDir);
 		void setGpsPort(QString port);
@@ -25,6 +27,8 @@ class DynoSettings {
 		void setLossTime(int t);
 		void setUserInfo(QString text);
 		void setWatermark(QString path);
+		void setCorrectionFactor(double cf);
+		void setFilterPower(double fp);
 
 		static DynoSettings * getInstance(void);
 };

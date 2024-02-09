@@ -9,6 +9,15 @@
 #include "wndabout.h"
 #include "dynochartseriespen.h"
 
+void WndMain::closeEvent(QCloseEvent * event) {
+	if (QMessageBox::question(this, tr("Exit"), tr("Are you sure to exit application?")) == QMessageBox::Yes) {
+		event->accept();
+	}
+	else {
+		event->ignore();
+	}
+}
+
 WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	_ui->setupUi(this);
 
@@ -61,6 +70,7 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	connect(_ui->actionRunLoad, SIGNAL(triggered(bool)), this, SLOT(_loadCurrentRun()));
 	connect(_ui->actionRunSave, SIGNAL(triggered(bool)), this, SLOT(_saveCurrentRun()));
 	connect(_ui->actionRunExport, SIGNAL(triggered(bool)), this, SLOT(_exportImage()));
+	connect(_ui->actionRunExit, SIGNAL(triggered(bool)), this, SLOT(close()));
 
 	connect(_ui->actionViewLosses, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
 	connect(_ui->actionViewLossesRaw, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
@@ -444,6 +454,8 @@ void WndMain::_dynoSettings() {
 		DynoSettings::getInstance()->setLossTime(w.lossTime());
 		DynoSettings::getInstance()->setUserInfo(w.userInfo());
 		DynoSettings::getInstance()->setWatermark(w.watermarkFile());
+		DynoSettings::getInstance()->setCorrectionFactor(w.correctionFactor());
+		DynoSettings::getInstance()->setFilterPower(w.filterPower());
 
 		DynoDevice::getInstance()->setPort(w.gpsPort());		
 		_chartView->updateUserInfo(w.userInfo());

@@ -37,6 +37,15 @@ QString DynoSettings::watermarkPath() {
 	return _settings.value("user/watermark", "").toString();
 }
 
+double DynoSettings::correctionFactor() {
+	return _settings.value("main/correctionFactor", 1.0f).toDouble();
+}
+
+double DynoSettings::filterPower()
+{
+	return _settings.value("main/filterPower", 4.0f).toDouble();
+}
+
 void DynoSettings::setDataDir(QString dataDir) {
 	_settings.setValue("main/dataDir", dataDir);
 }
@@ -62,6 +71,14 @@ void DynoSettings::setUserInfo(QString text) {
 
 void DynoSettings::setWatermark(QString path) {
 	_settings.setValue("user/watermark", path);
+}
+
+void DynoSettings::setCorrectionFactor(double cf) {
+	_settings.setValue("main/correctionFactor", cf);
+}
+
+void DynoSettings::setFilterPower(double fp) {
+	_settings.setValue("main/filterPower", fp);
 }
 
 DynoSettings * DynoSettings::getInstance() {

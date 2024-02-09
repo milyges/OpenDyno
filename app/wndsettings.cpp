@@ -13,6 +13,8 @@ WndSettings::WndSettings(QWidget *parent) : QDialog(parent), _ui(new Ui::WndSett
 	_ui->sbLossTime->setValue(DynoSettings::getInstance()->lossTime());
 	_ui->pteUserInfo->setPlainText(DynoSettings::getInstance()->userInfo());
 	_ui->leWatermark->setText(DynoSettings::getInstance()->watermarkPath());
+	_ui->dsbCorrectionFactor->setValue(DynoSettings::getInstance()->correctionFactor());
+	_ui->dsbFilterPower->setValue(DynoSettings::getInstance()->filterPower());
 
 	portName = DynoSettings::getInstance()->gpsPort();
 
@@ -50,6 +52,14 @@ QString WndSettings::userInfo() {
 
 QString WndSettings::watermarkFile() {
 	return _ui->leWatermark->text();
+}
+
+double WndSettings::correctionFactor() {
+	return _ui->dsbCorrectionFactor->value();
+}
+
+double WndSettings::filterPower() {
+	return _ui->dsbFilterPower->value();
 }
 
 void WndSettings::_browseDir() {

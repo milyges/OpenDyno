@@ -19,6 +19,8 @@ class WndSettings : public QDialog {
 		int lossTime(void);
 		QString userInfo(void);
 		QString watermarkFile(void);
+		double correctionFactor(void);
+		double filterPower(void);
 
 	private:
 		Ui::WndSettings * _ui;

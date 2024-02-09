@@ -1,5 +1,6 @@
 #include "dynorunresult.h"
 #include <QDebug>
+#include "dynosettings.h"
 
 void DynoRunResult::_calculateForceAndPower(DynoRunResultItem * item) {
 	item->force = item->accFiltered * _weight;
@@ -94,10 +95,10 @@ DynoRunResult::DynoRunResult() {
 
 	/* Wartości filtrów dobrane eksperymentalnie */
 	//_correctionFactor = 1.04;
-	_correctionFactor = 1.02;
+	_correctionFactor = DynoSettings::getInstance()->correctionFactor();
 	_accFilter = KalmanFilter();
 	//_accFilter.init(8, 1, 1, 5, 0.1);
-	_accFilter.init(4, 1, 1, 4, 0.3);
+	_accFilter.init(4, 1, 1, DynoSettings::getInstance()->filterPower(), 0.3);
 
 	_pwrFilter = KalmanFilter();
 	//_pwrFilter.init(10, 1, 1, 15, 0.1);

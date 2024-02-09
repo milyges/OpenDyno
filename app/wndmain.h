@@ -21,6 +21,9 @@ QT_END_NAMESPACE
 class WndMain : public QMainWindow {
 		Q_OBJECT
 
+	protected:
+		void closeEvent(QCloseEvent * event);
+
 	public:
 		WndMain(QWidget * parent = nullptr);
 		~WndMain();
