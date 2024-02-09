@@ -683,6 +683,9 @@
    <property name="text">
     <string>&amp;Export image</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
  </widget>
  <resources/>

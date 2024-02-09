@@ -74,8 +74,5 @@ class WndMain : public QMainWindow {
 		void _deviceGpsStatusChanged(int fix, int siv);
 		void _devicePortStatusChanged(QSerialPort::SerialPortError error);
 		void _speedChanged(double speed);
-
-
-
 };
 #endif // WNDMAIN_H

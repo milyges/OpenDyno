@@ -87,6 +87,9 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	_updateGuiState();
 	_updateProfileLabels();
 
+	_speedChanged(0);
+	_deviceGpsStatusChanged(DynoDevice::NoFix, 0);
+	_devicePortStatusChanged(QSerialPort::NotOpenError);
 	DynoDevice::getInstance()->setPort(DynoSettings::getInstance()->gpsPort());
 }
 
