@@ -7,6 +7,7 @@
 #include "wndsettings.h"
 #include "dynodevice.h"
 #include "wndabout.h"
+#include "dynochartseriespen.h"
 
 WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	_ui->setupUi(this);
@@ -102,6 +103,7 @@ WndMain::~WndMain() {
 DynoRun * WndMain::_newDynoRun() {
 	DynoRun * r = new DynoRun(_chart, _axisRPM, _axisPower, _axisTorque);
 	r->setVisibleData(_visibleDataSeries());
+	r->setPen(DynoChartSeriesPen::getPen(0));
 	return r;
 }
 
@@ -141,11 +143,11 @@ void WndMain::_updateRunsInfoBox() {
 
 	if (_currentRun) {
 		_updateRunInfo(0, _currentRun);
-		_chartView->addRunInfo(Qt::SolidLine, _currentRun);
+		_chartView->addRunInfo(_currentRun, 0);
 	}
 
 	for(int i = 0; i < _runs.count(); i++) {
-		_chartView->addRunInfo(_lineStyles[i], _runs[i]);
+		_chartView->addRunInfo(_runs[i], i + 1);
 		_updateRunInfo(i + 1, _runs[i]);
 	}
 }
@@ -376,7 +378,7 @@ void WndMain::_loadOtherRun() {
 	_prevSavePath = w.directory().absolutePath();
 
 	run = _newDynoRun();
-	run->setLineStyle(_lineStyles[count]);
+	run->setPen(DynoChartSeriesPen::getPen(count + 1));
 	run->loadFromFile(w.selectedFiles().at(0));
 	run->setName(QString("Run %1").arg(count + 2));
 

@@ -3,6 +3,7 @@
 #include <QAbstractAxis>
 #include <QToolTip>
 #include "dynosettings.h"
+#include "dynochartseriespen.h"
 
 DynoChartView::DynoChartView(QChart * chart, QWidget * parent) : QChartView(chart, parent) {
 	_chart = chart;
@@ -38,8 +39,8 @@ void DynoChartView::updateUserInfo(QString text) {
 	_chart->setMargins(QMargins(0, _userInfoLabel->boundingRect().height() + 5, 0, 0));
 }
 
-void DynoChartView::addRunInfo(Qt::PenStyle lineStyle, DynoRun * run) {
-	DynoChartViewRunInfo * info = new DynoChartViewRunInfo(_chart, run, lineStyle);
+void DynoChartView::addRunInfo(DynoRun * run, int number) {
+	DynoChartViewRunInfo * info = new DynoChartViewRunInfo(_chart, run, number);
 	info->setPos(10, 10 + _runInfo.size() * (info->height()));
 	_runInfo.append(info);
 }
@@ -85,17 +86,15 @@ void DynoChartView::resizeEvent(QResizeEvent * event) {
 	//_legend->updateGeometry();
 }
 
-DynoChartViewRunInfo::DynoChartViewRunInfo(QChart * chart, DynoRun * run, Qt::PenStyle lineStyle) {
+DynoChartViewRunInfo::DynoChartViewRunInfo(QChart * chart, DynoRun * run, int number) {
 	_chart = chart;
 
 	_text = new QGraphicsTextItem();
 	_line = new QGraphicsLineItem();
 
-	_text->setHtml(QString("<span style=\"color: red;\">%1KM@%2RPM</span> <span style=\"color: blue;\">%3Nm@%4RPM</span>").arg(run->powerMax(), 0, 'f', 1).arg(run->powerMaxRPM()).arg(run->torqueMax(), 0, 'f', 1).arg(run->torqueMaxRPM()));
+	_text->setHtml(QString("<span style=\"font-weight: bold;\">RUN %5</span> <span style=\"color: red; font-weight: bold;\">Pwr %1KM @ %2RPM</span>   <span style=\"color: blue; font-weight: bold;\">Trq %3Nm @ %4RPM</span>").arg(run->powerMax(), 0, 'f', 1).arg(run->powerMaxRPM()).arg(run->torqueMax(), 0, 'f', 1).arg(run->torqueMaxRPM()).arg(number + 1));
 
-	QPen p(lineStyle);
-	p.setColor(Qt::red);
-	_line->setPen(p);
+	_line->setPen(DynoChartSeriesPen::getPen(number));
 	_line->setLine(5, 0, 25, 0);
 
 	_chart->scene()->addItem(_text);
@@ -111,7 +110,7 @@ DynoChartViewRunInfo::~DynoChartViewRunInfo() {
 
 void DynoChartViewRunInfo::setPos(qreal x, qreal y) {
 	_text->setPos(x + 30, y);
-	_line->setPos(x, y + _text->boundingRect().height() / 2 - 1);
+	_line->setPos(x, y + _text->boundingRect().height() / 2);
 }
 
 qreal DynoChartViewRunInfo::height() {

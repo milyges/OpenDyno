@@ -21,32 +21,26 @@ DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QVa
 	_chart->addSeries(_pwrRaw);	
 	_pwrRaw->attachAxis(_axisRpm);
 	_pwrRaw->attachAxis(_axisPwr);
-	_pwrRaw->setColor(QColorConstants::DarkYellow);
 	_chart->addSeries(_pwrWheel);
 
 	_pwrWheel->attachAxis(_axisRpm);
 	_pwrWheel->attachAxis(_axisPwr);
-	_pwrWheel->setColor(QColorConstants::DarkGreen);
 
 	_chart->addSeries(_pwrTotal);	
 	_pwrTotal->attachAxis(_axisRpm);
 	_pwrTotal->attachAxis(_axisPwr);
-	_pwrTotal->setColor(QColorConstants::Red);
 
 	_chart->addSeries(_losses);	
 	_losses->attachAxis(_axisRpm);
 	_losses->attachAxis(_axisPwr);
-	_losses->setColor(QColorConstants::Green);
 	_chart->addSeries(_lossesRaw);
 
 	_lossesRaw->attachAxis(_axisRpm);
 	_lossesRaw->attachAxis(_axisPwr);
-	_lossesRaw->setColor(QColorConstants::Magenta);
 
 	_chart->addSeries(_torque);
 	_torque->attachAxis(_axisRpm);
 	_torque->attachAxis(_axisTrq);
-	_torque->setColor(QColorConstants::Blue);
 
 	setName("Run");
 	_result = DynoRunResult();
@@ -155,14 +149,9 @@ void DynoRun::redraw() {
 	_torqueMaxRpm = 0;
 	_rpmMax = 0;
 	_speedMax = 0;
-	_drawState = 4; /* Pierwszą 1 sekundę pomijamy w wykresie */
+	_drawState = 4*2; /* Pierwsze 2 sekundy pomijamy w wykresie */
 
-	update();
-	update();
-	update();
-	update();
-	update();
-	update();
+	update();	
 }
 
 void DynoRun::update() {
@@ -246,15 +235,12 @@ void DynoRun::show() {
 	_updateVisibeData(_visibleData);
 }
 
-void DynoRun::setLineStyle(Qt::PenStyle style) {
-	QPen pen = QPen(style);
-	pen.setWidthF(1);
-
+void DynoRun::setPen(QPen pen) {
 	_pwrRaw->setPen(pen);
 	_pwrRaw->setColor(QColorConstants::DarkYellow);
 
 	_pwrWheel->setPen(pen);
-	_pwrWheel->setColor(QColorConstants::Cyan);
+	_pwrWheel->setColor(QColorConstants::DarkGreen);
 
 	_pwrTotal->setPen(pen);
 	_pwrTotal->setColor(QColorConstants::Red);

@@ -47,7 +47,7 @@ class DynoRun : public QObject
 		void hide(void);
 		void show(void);
 
-		void setLineStyle(Qt::PenStyle style);
+		void setPen(QPen pen);
 		void setParameters(float rpmRatio, int weight);
 
 		double powerMax(void);

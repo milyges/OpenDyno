@@ -14,7 +14,7 @@ class DynoChartViewRunInfo {
 		QGraphicsLineItem * _line;
 
 	public:
-		DynoChartViewRunInfo(QChart * chart, DynoRun * run, Qt::PenStyle lineStyle);
+		DynoChartViewRunInfo(QChart * chart, DynoRun * run, int number);
 		~DynoChartViewRunInfo();
 
 		void setPos(qreal x, qreal y);
@@ -28,7 +28,7 @@ class DynoChartView : public QChartView {
 		~DynoChartView();
 
 		void updateUserInfo(QString text);
-		void addRunInfo(Qt::PenStyle lineStyle, DynoRun * run);
+		void addRunInfo(DynoRun * run, int number);
 		void removeRunInfo(void);
 
 	protected:
