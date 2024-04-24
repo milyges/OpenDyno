@@ -46,7 +46,7 @@ class DynoRunResult {
 		DynoRunResult();
 		~DynoRunResult();
 
-        void setParameters(float rpmRatio, int weight, int lossesSkipNum = 10);
+		void setParameters(float rpmRatio, int weight, int lossesSkipNum = 8);
 		float rpmRatio(void);
 		int weight(void);
 

@@ -125,7 +125,7 @@ void DynoDevice::_demoTimerTick() {
 	if (!_demoTextStream) {
 		_demoTextStream = new QTextStream(_demoFile);
 		qDebug() << _demoTextStream->readLine();
-		_demoTimer->setInterval(100);
+		_demoTimer->setInterval(250);
 		_demoTimer->setSingleShot(false);
 		_demoTimer->start();
 	}

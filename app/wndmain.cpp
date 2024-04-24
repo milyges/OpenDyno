@@ -415,7 +415,7 @@ void WndMain::_removeRun() {
 
 void WndMain::_startStopRun() {
 	if (_runInPogress) {
-		_currentRun->cancelRun();
+		_currentRun->cancelRun();				
 	}
 	else {
 		if (_currentRun) {
@@ -425,11 +425,14 @@ void WndMain::_startStopRun() {
 		_currentRun = _newDynoRun();
 		_currentRun->setParameters(_currentProfile.rpmRatio, _currentProfile.weight);
 		connect(_currentRun, SIGNAL(runStateChanged(DynoRun::DynoRunState)), this, SLOT(_runStateChanged(DynoRun::DynoRunState)));
+		connect(_currentRun, SIGNAL(runLossesRemaining(double)), this, SLOT(_runLossesRemainingChanged(double)));
 		_runInPogress = true;
 		_currentRun->startRun();
 	}
 
 	_updateGuiState();
+	_updateRunsInfoBox();
+	_updateAxesMax();
 }
 
 void WndMain::_setVechicleProfile() {
@@ -484,6 +487,7 @@ void WndMain::_runStateChanged(DynoRun::DynoRunState state) {
 		case DynoRun::RunInitial: {
 			_ui->lbStatus->setText(tr("Waiting for run start..."));
 			_updateAxesMax();
+			_updateRunsInfoBox();
 			break;
 		};
 		case DynoRun::RunWaitForSpeed: {
@@ -500,24 +504,34 @@ void WndMain::_runStateChanged(DynoRun::DynoRunState state) {
 		}
 		case DynoRun::RunLosses: {
 			_ui->lbStatus->setText(tr("Calculating losses, slow down without braking..."));
+			_updateRunsInfoBox();
+			_updateAxesMax();
 			break;
 		}
 		case DynoRun::RunFinished: {
 			_ui->lbStatus->setText(tr("Run finished."));
-			_updateRunsInfoBox();
-			_updateAxesMax();
 			_runInPogress = false;
+			disconnect(_currentRun, SIGNAL(runStateChanged(DynoRun::DynoRunState)));
+			disconnect(_currentRun, SIGNAL(runLossesRemaining(double)));
+			_updateRunsInfoBox();
+			_updateAxesMax();			
 			break;
 		}
 		case DynoRun::RunCanceled: {
 			_ui->lbStatus->setText(tr("Run canceled."));
+			_runInPogress = false;
+			disconnect(_currentRun, SIGNAL(runStateChanged(DynoRun::DynoRunState)));
+			disconnect(_currentRun, SIGNAL(runLossesRemaining(double)));
 			_updateRunsInfoBox();
 			_updateAxesMax();
-			_runInPogress = false;
 			break;
 		}
 	}
 	_updateGuiState();
+}
+
+void WndMain::_runLossesRemainingChanged(double time) {
+	_ui->lbStatus->setText(tr("Calculating losses, slow down without braking [%1s left]...").arg(time, 0, 'f', 1));
 }
 
 void WndMain::_devicePortChanged(QString name) {

@@ -93,6 +93,10 @@ DynoRunResult::DynoRunResult() {
 	_weight = 1;
 	_rpmRatio = 1.0f;
 
+	_lossC = 0;
+	_lossA = 0;
+	_lossB = 0;
+
 	/* Wartości filtrów dobrane eksperymentalnie */
 	//_correctionFactor = 1.04;
 	_correctionFactor = DynoSettings::getInstance()->correctionFactor();
@@ -184,5 +188,9 @@ int DynoRunResult::itemsCount() {
 }
 
 double DynoRunResult::lossAt(int rpm) {
+	if (_lossesCnt <= 0) {
+		return 0;
+	}
+
     return _lossC * pow(2.71828, _lossA * rpm);
 }

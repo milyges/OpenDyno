@@ -72,6 +72,7 @@ class WndMain : public QMainWindow {
 		void _visiblaDataToogled(void);
 
 		void _runStateChanged(DynoRun::DynoRunState state);
+		void _runLossesRemainingChanged(double time);
 
 		void _devicePortChanged(QString name);
 		void _deviceGpsStatusChanged(int fix, int siv);

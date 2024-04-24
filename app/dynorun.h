@@ -104,6 +104,7 @@ class DynoRun : public QObject
 
 	signals:
 		void runStateChanged(DynoRun::DynoRunState state);
+		void runLossesRemaining(double time);
 };
 
 #endif // DYNORUN_H

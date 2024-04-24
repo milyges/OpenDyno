@@ -51,6 +51,8 @@ DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QVa
 	_torqueMaxRpm = 0;
 	_rpmMax = 0;
 	_speedMax = 0;
+
+	_drawState = 0;
 }
 
 DynoRun::~DynoRun() {
@@ -350,8 +352,8 @@ void DynoRun::_updateVisibeData(uchar v) {
 void DynoRun::_finishRun(DynoRunState state) {
 	_state = state;
 	disconnect(DynoDevice::getInstance(), SIGNAL(newData(double,double)), this, SLOT(_dynoNewData(double,double)));
-	emit runStateChanged(_state);
 	redraw();
+	emit runStateChanged(_state);	
 }
 
 void DynoRun::_dynoNewData(double gpsTime, double speed) {
@@ -393,5 +395,9 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 	if ((ticks % 2) == 0) {
 		//qDebug() << "redraw; time" << gpsTime - _startTime << "speed" << speed;
 		update();
+
+		if (_state == RunLosses) {
+			emit runLossesRemaining(DynoSettings::getInstance()->lossTime() - (gpsTime - loossesStart));
+		}
 	}
 }
