@@ -151,7 +151,7 @@ void DynoRun::redraw() {
 	_torqueMaxRpm = 0;
 	_rpmMax = 0;
 	_speedMax = 0;
-	_drawState = 4*2; /* Pierwsze 2 sekundy pomijamy w wykresie */
+	_drawState = 2;
 
 	update();	
 }
@@ -362,7 +362,7 @@ void DynoRun::_dynoNewData(double gpsTime, double speed) {
 
 	if ((_state == RunWaitForSpeed) && (speed >= 0.0f)) {
 		_state = RunCountdown;
-		ticks = -10; /* Czekamy 3 sek do początku pomiaru */
+		ticks = -8; /* Czekamy 2 sek do początku pomiaru */
 		emit runStateChanged(_state);
 	}
 
