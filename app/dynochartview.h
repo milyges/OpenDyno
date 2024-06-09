@@ -30,6 +30,7 @@ class DynoChartView : public QChartView {
 		void updateUserInfo(QString text);
 		void addRunInfo(DynoRun * run, int number);
 		void removeRunInfo(void);
+		void hideInfoBox(void);
 
 	protected:
 		void mouseMoveEvent(QMouseEvent *event);

@@ -345,8 +345,9 @@ void WndMain::_exportImage() {
 		painter.setPen(QColor(255,34,255,255));
 
 		/* Brzydki hak żeby na szybko eksportować w takim rozmiarze jakchcemy */
-		QSize oldSize = _chartView->size();
+		QSize oldSize = _chartView->size();		
 		_chartView->resize(buff.size());
+		_chartView->hideInfoBox();
 		_chartView->render(&painter);
 		_chartView->resize(oldSize);
 

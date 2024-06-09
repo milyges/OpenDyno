@@ -53,6 +53,10 @@ void DynoChartView::removeRunInfo() {
 	}
 }
 
+void DynoChartView::hideInfoBox() {
+	_infoBox->hide();
+}
+
 void DynoChartView::mouseMoveEvent(QMouseEvent * event) {
 	QChartView::mouseMoveEvent(event);
 
