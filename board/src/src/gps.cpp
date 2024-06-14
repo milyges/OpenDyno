@@ -47,16 +47,17 @@ void gps_init(void) {
 }
 
 void gps_loop(void) {
+#if 0
     static uint32_t speedHistory[3] = { 0, 0, 0};
     static uint32_t timeHistory[3] = { 0, 0, 0};
     static uint32_t prevSpeed = 0, prevSpeedFiltered = 0;
     uint32_t speed, speedFiltered;
-    
+#endif 
 
     if (_ublox_gnss.getPVT()) {
         uint32_t currentTime = _ublox_gnss.getTimeOfWeek();
         uint32_t currentSpeed = _ublox_gnss.getGroundSpeed();
-
+#if 0
         /* Rotowanie danych */
         for(int i = 0; i < 3 - 1; i++) {
             speedHistory[i] = speedHistory[i + 1];
@@ -81,9 +82,13 @@ void gps_loop(void) {
 
         /* Wypisujemy o 0.2sek do tyłu, żeby zniwelować opóźnienie na filtrze */
         //uprintf("time=%u, speedFiltered=%u, speed=%u, speedraw=%u\r\n", timeHistory[0], speedFiltered, prevSpeed, speedHistory[0]);
-        uprintf("+%u;%u;%u;%u\r\n", timeHistory[0], speedFiltered, _ublox_gnss.getSIV(), _ublox_gnss.getFixType());
+#endif
+        //uprintf("+%u;%u;%u;%u\r\n", timeHistory[0], speedFiltered, _ublox_gnss.getSIV(), _ublox_gnss.getFixType());
+        uprintf("+%u;%u;%u;%u\r\n", currentTime, currentSpeed, _ublox_gnss.getSIV(), _ublox_gnss.getFixType());
 
+#if 0
         prevSpeed = speed;
         prevSpeedFiltered = speedFiltered;
+#endif 
     }
 }
