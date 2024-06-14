@@ -66,6 +66,8 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 
 	_prevSavePath = DynoSettings::getInstance()->dataDir();
 
+	_wndSpeedAcc = new WndSpeedAcc(this);
+
 	connect(_ui->actionRunStart, SIGNAL(triggered(bool)), this, SLOT(_startStopRun()));
 	connect(_ui->actionRunLoad, SIGNAL(triggered(bool)), this, SLOT(_loadCurrentRun()));
 	connect(_ui->actionRunSave, SIGNAL(triggered(bool)), this, SLOT(_saveCurrentRun()));
@@ -78,6 +80,7 @@ WndMain::WndMain(QWidget * parent) : QMainWindow(parent), _ui(new Ui::WndMain) {
 	connect(_ui->actionViewPowerOnWheels, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
 	connect(_ui->actionViewPowerOnWheelsRaw, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
 	connect(_ui->actionViewTorque, SIGNAL(toggled(bool)), this, SLOT(_visiblaDataToogled()));
+	connect(_ui->actionViewSpeedAcceleration, SIGNAL(triggered(bool)), _wndSpeedAcc, SLOT(show()));
 
 	connect(_ui->actionSettingsProfile, SIGNAL(triggered(bool)), this, SLOT(_setVechicleProfile()));
 	connect(_ui->actionSettingsDyno, SIGNAL(triggered(bool)), this, SLOT(_dynoSettings()));
@@ -110,11 +113,13 @@ WndMain::~WndMain() {
 	delete _chart;
 	delete _chartView;
 
+	delete _wndSpeedAcc;
 	delete _ui;
 }
 
 DynoRun * WndMain::_newDynoRun() {
-	DynoRun * r = new DynoRun(_chart, _axisRPM, _axisPower, _axisTorque);
+	DynoRun * r = new DynoRun(_chart, _axisRPM, _axisPower, _axisTorque,
+							  _wndSpeedAcc->getChart(), _wndSpeedAcc->getAxisTime(), _wndSpeedAcc->getAxisSpeed(), _wndSpeedAcc->getAxisAcceleration());
 	r->setVisibleData(_visibleDataSeries());
 	r->setPen(DynoChartSeriesPen::getPen(0));
 	return r;

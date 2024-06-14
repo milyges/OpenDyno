@@ -3,7 +3,8 @@
 #include "dynosettings.h"
 #include "dynodevice.h"
 
-DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QValueAxis * axisTrq, QObject *parent): QObject{parent} {
+DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QValueAxis * axisTrq,
+				 QChart * _speedChart, QValueAxis * axisTime, QValueAxis * axisSpeed, QValueAxis * axisAcc, QObject *parent): QObject{parent} {
 	_name = "";
 
 	_chart = chart;
@@ -11,12 +12,19 @@ DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QVa
 	_axisPwr = axisPwr;
 	_axisTrq = axisTrq;
 
+	_speedChart = _speedChart;
+	_axisTime = axisTime;
+	_axisSpeed = axisSpeed;
+	_axisAcc = axisAcc;
+
 	_pwrRaw = new QSplineSeries();
 	_pwrWheel = new QSplineSeries();
 	_pwrTotal = new QSplineSeries();
 	_losses = new QSplineSeries();
 	_lossesRaw = new QSplineSeries();
 	_torque = new QSplineSeries();
+	_speed = new QSplineSeries();
+	_acc = new QSplineSeries();
 
 	_chart->addSeries(_pwrRaw);	
 	_pwrRaw->attachAxis(_axisRpm);
@@ -42,6 +50,14 @@ DynoRun::DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QVa
 	_torque->attachAxis(_axisRpm);
 	_torque->attachAxis(_axisTrq);
 
+	_speedChart->addSeries(_speed);
+	_speed->attachAxis(_axisTime);
+	_speed->attachAxis(_axisSpeed);
+
+	_speedChart->addSeries(_acc);
+	_acc->attachAxis(_axisTime);
+	_acc->attachAxis(_axisAcc);
+
 	setName("Run");
 	_result = DynoRunResult();
 
@@ -64,6 +80,8 @@ DynoRun::~DynoRun() {
 	delete _losses;
 	delete _lossesRaw;
 	delete _torque;
+	delete _speed;
+	delete _acc;
 }
 
 DynoRun::DynoRunState DynoRun::state() {
@@ -144,6 +162,8 @@ void DynoRun::redraw() {
 	_losses->clear();
 	_lossesRaw->clear();
 	_torque->clear();
+	_speed->clear();
+	_acc->clear();
 
 	_pwrMax = 0;
 	_pwrMaxRpm = 0;
@@ -211,6 +231,9 @@ void DynoRun::update() {
 		*_pwrTotal << QPointF(item->rpm, powerTotal);
 		*_losses << QPointF(item->rpm, loss);
 		*_torque << QPointF(item->rpm, torque);
+
+		*_speed << QPointF(item->time, item->speed);
+		*_acc << QPointF(item->time, item->accFiltered);
 	}
 
 	/* Surowe straty */	
@@ -219,6 +242,8 @@ void DynoRun::update() {
 			item = _result.item(_drawState);
 			loss = -item->powerKwFiltered * 1.36f;
 			*_lossesRaw << QPointF(item->rpm, loss);
+			*_speed << QPointF(item->time, item->speed);
+			*_acc << QPointF(item->time, item->accFiltered);
 		}
 	}
 

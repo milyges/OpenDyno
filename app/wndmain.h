@@ -7,6 +7,7 @@
 #include <QValueAxis>
 #include <QSplineSeries>
 
+#include "wndspeedacc.h"
 #include "dynochartview.h"
 #include "dynorun.h"
 #include "vehicleprofile.h"
@@ -37,6 +38,9 @@ class WndMain : public QMainWindow {
 		QValueAxis * _axisPower;
 		QValueAxis * _axisTorque;
 		DynoChartView * _chartView;
+
+		/* Okno prędkości i prześpieszenia */
+		WndSpeedAcc * _wndSpeedAcc;
 
 		/* Pomiary */
 		DynoRun * _currentRun;

@@ -23,7 +23,8 @@ SOURCES += \
     wndcalibrate.cpp \
     wndmain.cpp \
     wndprofile.cpp \
-    wndsettings.cpp
+    wndsettings.cpp \
+    wndspeedacc.cpp
 
 HEADERS += \
     dynochartseriespen.h \
@@ -40,14 +41,16 @@ HEADERS += \
     wndcalibrate.h \
     wndmain.h \
     wndprofile.h \
-    wndsettings.h
+    wndsettings.h \
+    wndspeedacc.h
 
 FORMS += \
     wndabout.ui \
     wndcalibrate.ui \
     wndmain.ui \
     wndprofile.ui \
-    wndsettings.ui
+    wndsettings.ui \
+    wndspeedacc.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

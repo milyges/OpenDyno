@@ -29,7 +29,8 @@ class DynoRun : public QObject
 		static const uchar LossesRawVisible = 16;
 		static const uchar TorqueVisible = 32;
 
-		explicit DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QValueAxis * axisTrq, QObject *parent = nullptr);
+		explicit DynoRun(QChart * chart, QValueAxis * axisRpm, QValueAxis * axisPwr, QValueAxis * axisTrq,
+						 QChart * _speedChart, QValueAxis * axisTime, QValueAxis * axisSpeed, QValueAxis * axisAcc, QObject *parent = nullptr);
 		~DynoRun();
 
 		DynoRun::DynoRunState state(void);
@@ -70,6 +71,9 @@ class DynoRun : public QObject
 		QValueAxis * _axisRpm;
 		QValueAxis * _axisPwr;
 		QValueAxis * _axisTrq;
+		QValueAxis * _axisTime;
+		QValueAxis * _axisSpeed;
+		QValueAxis * _axisAcc;
 
 		QSplineSeries * _pwrRaw;
 		QSplineSeries * _pwrWheel;
@@ -77,6 +81,8 @@ class DynoRun : public QObject
 		QSplineSeries * _lossesRaw;
 		QSplineSeries * _losses;
 		QSplineSeries * _torque;
+		QSplineSeries * _acc;
+		QSplineSeries * _speed;
 
 		DynoRunResult _result;
 		int _drawState;
