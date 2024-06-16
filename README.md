@@ -29,5 +29,5 @@ How it is look?
 ![Screenshot 4](doc/screenshots/screenshot4.png)
 *Run information detail hint*
 
-![Screenshot 5](doc/screenshots/screenshot5.png))
+![Screenshot 5](doc/screenshots/screenshot5.png)
 *Example image export*
