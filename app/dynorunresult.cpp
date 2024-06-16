@@ -101,12 +101,15 @@ DynoRunResult::DynoRunResult() {
 	//_correctionFactor = 1.04;
 	_correctionFactor = DynoSettings::getInstance()->correctionFactor();
 	_accFilter = KalmanFilter();
-	//_accFilter.init(8, 1, 1, 5, 0.1);
-	_accFilter.init(4, 1, 1, DynoSettings::getInstance()->filterPower(), 0.3);
+	//_accFilter.init(8, 1, 1, 5, 0.25);
+	_accFilter.init(4, 1, 1, DynoSettings::getInstance()->filterPower(), 0.25);
 
 	_pwrFilter = KalmanFilter();
 	//_pwrFilter.init(10, 1, 1, 15, 0.1);
-	_pwrFilter.init(10, 1, 1, 15, 0.3);
+	_pwrFilter.init(10, 1, 1, 15, 0.25);
+
+	_speedFilter = KalmanFilter();
+	_speedFilter.init(0.2, 1, 1, 1, 0.25);
 }
 
 DynoRunResult::~DynoRunResult() {
@@ -149,11 +152,14 @@ DynoRunResultItem * DynoRunResult::addData(double time, double speed) {
 	if (_items.size() > 0) {
 		prevItem = _items.last();
 	}
+	else {
+		_speedFilter.reset(speed);
+	}
 
 	item = new DynoRunResultItem();
 	item->time = time;
-	item->speed = speed;
-	item->speedMs = speed * 1000 / 3600;
+	item->speed = _speedFilter.getFiltered(speed);
+	item->speedMs = item->speed * 1000 / 3600;
 	item->rpm = round(item->speed * _rpmRatio);
 
 	if (prevItem) {

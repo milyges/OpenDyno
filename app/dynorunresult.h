@@ -34,6 +34,7 @@ class DynoRunResult {
 		QList<DynoRunResultItem *> _items;
 		KalmanFilter _accFilter;
 		KalmanFilter _pwrFilter;
+		KalmanFilter _speedFilter;
 
 		double _lossA;
 		double _lossB;
