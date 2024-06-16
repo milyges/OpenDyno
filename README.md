@@ -25,3 +25,9 @@ How it is look?
 
 ![Screenshot 3](doc/screenshots/screenshot3.png)
 *All data series visible*
+
+![Screenshot 4](doc/screenshots/screenshot4.png)
+*Run information detail hint*
+
+![Screenshot 5](doc/screenshots/screenshot5.jpeg)
+*Example image export*
